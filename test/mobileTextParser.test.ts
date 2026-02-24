@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { parseMobileTextMatches } from '../src/utils/mobileTextParser';
 
 describe('parseMobileTextMatches', () => {
-  it('plain text bloktan maçları parse eder', () => {
+  it('plain text bloktan maçları parse eder ve ligi korur', () => {
     const text = `
 AVRUPA: Şampiyonlar Ligi - Playofflar
 20:45Atl. Madrid - Club Brugge -:-
@@ -30,5 +30,12 @@ AVRUPA: Şampiyonlar Ligi - Playofflar
       homeScore: 0,
       awayScore: 1
     });
+  });
+
+  it('lig bilgisi yoksa Genel kullanır', () => {
+    const text = `76'Ypiranga AP - Santos AP 2:3`;
+    const parsed = parseMobileTextMatches(text);
+
+    expect(parsed[0].league).toBe('Genel');
   });
 });

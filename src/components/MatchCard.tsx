@@ -1,8 +1,7 @@
 import React from 'react';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { Match } from '../types/match';
-import { buildMatchH2HUrl, buildMatchPageUrl, buildMatchStatsFeedUrl } from '../utils/flashscoreUrls';
 
 interface MatchCardProps {
   match: Match;
@@ -16,24 +15,31 @@ const statusLabel: Record<Match['status'], string> = {
   unknown: 'Bilinmiyor'
 };
 
-export function MatchCard({ match }: MatchCardProps) {
-  const onOpen = async (url: string) => {
-    await Linking.openURL(url);
-  };
+function initialFromTeam(team: string): string {
+  return team.trim().charAt(0).toUpperCase() || '?';
+}
 
+export function MatchCard({ match }: MatchCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.topRow}>
-        <Text style={styles.league}>{match.league || match.sport}</Text>
+        <Text style={styles.league}>{match.league || 'Genel'}</Text>
         <Text style={[styles.badge, match.status === 'live' ? styles.liveBadge : undefined]}>{statusLabel[match.status]}</Text>
       </View>
 
       <View style={styles.teamRow}>
-        <Text style={styles.team}>{match.homeTeam}</Text>
+        <View style={styles.teamWrap}>
+          <View style={styles.logoCircle}><Text style={styles.logoText}>{initialFromTeam(match.homeTeam)}</Text></View>
+          <Text style={styles.team}>{match.homeTeam}</Text>
+        </View>
         <Text style={styles.score}>{match.homeScore ?? '-'}</Text>
       </View>
+
       <View style={styles.teamRow}>
-        <Text style={styles.team}>{match.awayTeam}</Text>
+        <View style={styles.teamWrap}>
+          <View style={styles.logoCircle}><Text style={styles.logoText}>{initialFromTeam(match.awayTeam)}</Text></View>
+          <Text style={styles.team}>{match.awayTeam}</Text>
+        </View>
         <Text style={styles.score}>{match.awayScore ?? '-'}</Text>
       </View>
 
@@ -42,17 +48,7 @@ export function MatchCard({ match }: MatchCardProps) {
         <Text style={styles.meta}>{match.id}</Text>
       </View>
 
-      <View style={styles.actionsRow}>
-        <Pressable style={styles.actionBtn} onPress={() => onOpen(buildMatchPageUrl(match.id))}>
-          <Text style={styles.actionText}>Maç Sayfası</Text>
-        </Pressable>
-        <Pressable style={styles.actionBtn} onPress={() => onOpen(buildMatchH2HUrl(match.id))}>
-          <Text style={styles.actionText}>H2H</Text>
-        </Pressable>
-        <Pressable style={styles.actionBtn} onPress={() => onOpen(buildMatchStatsFeedUrl(match.id))}>
-          <Text style={styles.actionText}>İstatistik Feed</Text>
-        </Pressable>
-      </View>
+      <Text style={styles.inlineInfo}>Detay ekranı uygulama içinde kalacak (dış siteye yönlendirme kapalı).</Text>
     </View>
   );
 }
@@ -73,7 +69,9 @@ const styles = StyleSheet.create({
   },
   league: {
     fontWeight: '600',
-    color: '#1e293b'
+    color: '#1e293b',
+    flexShrink: 1,
+    marginRight: 8
   },
   badge: {
     fontSize: 12,
@@ -89,13 +87,33 @@ const styles = StyleSheet.create({
   },
   teamRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  teamWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 8,
+    gap: 8
+  },
+  logoCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 999,
+    backgroundColor: '#e2e8f0',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  logoText: {
+    fontWeight: '700',
+    color: '#334155',
+    fontSize: 12
   },
   team: {
     fontSize: 16,
     color: '#0f172a',
-    flex: 1,
-    marginRight: 8
+    flex: 1
   },
   score: {
     fontSize: 20,
@@ -113,20 +131,8 @@ const styles = StyleSheet.create({
     color: '#64748b',
     fontSize: 12
   },
-  actionsRow: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap'
-  },
-  actionBtn: {
-    backgroundColor: '#e2e8f0',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 6
-  },
-  actionText: {
-    color: '#0f172a',
-    fontSize: 12,
-    fontWeight: '600'
+  inlineInfo: {
+    color: '#64748b',
+    fontSize: 11
   }
 });

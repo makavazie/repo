@@ -1,7 +1,7 @@
 import { Match } from '../types/match';
 
-const LEAGUE_LINE = /^[A-ZÇĞİÖŞÜ&\s\.\-]+:\s.+/;
-const MATCH_LINE = /^(?<time>\d{1,2}:\d{2}|\d{1,3}'|Devre Arası|Ertelendi)?\s*(?<home>[^-\n]+?)\s-\s(?<away>[^\d\n]+?)\s(?<score>-:-|\d+:\d+)$/;
+const LEAGUE_LINE = /^[^\d\n][^\n]*:\s+[^\n]+$/;
+const MATCH_LINE = /^(?<time>\d{1,2}:\d{2}|\d{1,3}'|Devre Arası|Ertelendi)?\s*(?<home>[^-\n]+?)\s-\s(?<away>[^\n\d]+?)\s(?<score>-:-|\d+:\d+)$/;
 
 function toStatus(timeOrState: string | undefined, score: string) {
   if (timeOrState?.includes("'")) {
@@ -25,11 +25,25 @@ function toStatus(timeOrState: string | undefined, score: string) {
 
 function stripHtml(html: string): string {
   return html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, '\n')
+    .replace(/<style[\s\S]*?<\/style>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<\/li>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/\r/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
+}
+
+function normalizeLine(line: string): string {
+  return line
+    .replace(/^(\d{1,2}:\d{2})([A-Za-zÇĞİÖŞÜçğıöşü])/u, '$1 $2')
+    .replace(/^(\d{1,2}:\d{2})Ertelendi/u, '$1 Ertelendi ')
+    .replace(/^Devre Arası([A-Za-zÇĞİÖŞÜçğıöşü])/u, 'Devre Arası $1')
     .trim();
 }
 
@@ -37,15 +51,15 @@ export function parseMobileTextMatches(raw: string): Match[] {
   const clean = raw.includes('<html') ? stripHtml(raw) : raw;
   const lines = clean
     .replace(/\u00a0/g, ' ')
-    .split(/(?=\d{1,2}:\d{2}|\d{1,3}'|Devre Arası|Ertelendi|[A-ZÇĞİÖŞÜ&\s\.\-]+:\s)/)
-    .map((line) => line.trim())
+    .split('\n')
+    .map((line) => normalizeLine(line.trim()))
     .filter(Boolean);
 
   const matches: Match[] = [];
-  let currentLeague = 'Bilinmeyen Lig';
+  let currentLeague = 'Genel';
 
   for (const line of lines) {
-    if (LEAGUE_LINE.test(line) && !line.includes(' - ')) {
+    if (LEAGUE_LINE.test(line) && !line.includes(' - ') && !line.startsWith('Özet') && !line.startsWith('Oranlar')) {
       currentLeague = line.replace(/\s*Puan durumu$/i, '').trim();
       continue;
     }
