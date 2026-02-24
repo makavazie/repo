@@ -4,11 +4,13 @@
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "test": "vitest run"
+    "test": "vitest run",
+    "doctor": "expo doctor",
+    "fix-deps": "expo install --fix"
   },
   "dependencies": {
     "expo": "~54.0.0",

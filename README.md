@@ -81,6 +81,31 @@ npm run start
 - Node.js doğru kurulmamış olabilir. Node.js LTS'i tekrar kur.
 - Yeni terminal açıp tekrar dene.
 
+### Sorun: `TurboModuleRegistry.getEnforcing(...): 'PlatformConstants' could not be found`
+Bu hata genelde **sürüm uyuşmazlığı** veya **bozuk Metro cache** kaynaklı olur.
+
+1. Proje klasöründe temiz kurulum yap:
+   ```bash
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
+   Windows için:
+   ```powershell
+   rmdir /s /q node_modules
+   del package-lock.json
+   npm install
+   ```
+2. Expo paketlerini otomatik eşitle:
+   ```bash
+   npm run fix-deps
+   npm run doctor
+   ```
+3. Cache temizleyerek başlat:
+   ```bash
+   npm run start
+   ```
+4. Telefonda Expo Go'yu tamamen kapatıp tekrar aç; gerekirse Expo Go'yu güncelleyip yeniden dene.
+
 ### Sorun: Expo Go sürümü SDK 54 ama proje SDK 52
 - Bu repo artık SDK 54'e güncellendi. Eğer eski paketler kaldıysa temiz kurulum yap:
   ```bash
