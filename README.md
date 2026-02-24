@@ -81,6 +81,17 @@ npm run start
 - Node.js doğru kurulmamış olabilir. Node.js LTS'i tekrar kur.
 - Yeni terminal açıp tekrar dene.
 
+### Sorun: `expo-asset cannot be found` hatası
+- Proje klasöründe şu komutu çalıştır:
+  ```bash
+  npx expo install expo-asset
+  ```
+- Sonra tekrar başlat:
+  ```bash
+  npm run start
+  ```
+
+
 ### Sorun: QR kodu okutup bağlanmıyor
 - Telefon ve bilgisayar aynı internette mi kontrol et.
 - VPN kapat.
