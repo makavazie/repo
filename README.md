@@ -75,6 +75,32 @@ npm run start
 6. Çıkan QR kodu Expo Go ile okut.
 
 
+
+## iOS'ta çalıştırma (Expo Go ile)
+
+Sen iOS kullandığın için en kısa yol bu:
+
+1. iPhone'a **Expo Go** kur (App Store).
+2. iPhone ve bilgisayarı **aynı Wi‑Fi**'ye bağla.
+3. Proje klasöründe terminal aç ve sırayla çalıştır:
+   ```bash
+   npm install
+   npm run fix-deps
+   npm run doctor
+   npm run start
+   ```
+4. Terminalde çıkan QR kodu iPhone kamerası veya Expo Go ile okut.
+
+### iOS için ekstra notlar
+
+- QR açılmazsa şu komutu dene:
+  ```bash
+  npx expo start --tunnel -c
+  ```
+- iOS'ta bazen eski oturum takılabilir: Expo Go'yu tamamen kapatıp tekrar aç.
+- Hâlâ açılmazsa iPhone'dan Expo Go'yu silip yeniden kur.
+
+
 ## Çok sık yaşanan sorunlar (çok basit çözüm)
 
 ### Sorun: `npm` komutu çalışmıyor
