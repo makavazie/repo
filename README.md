@@ -183,7 +183,7 @@ Bu hata genelde **sürüm uyuşmazlığı** veya **bozuk Metro cache** kaynaklı
 ## Mimari
 
 - `App.tsx`: Ana ekran, yükleme/yenileme ve hata yönetimi.
-- `src/services/flashscoreService.ts`: Feed çağrısı yapan servis (header + fallback mantığı içerir).
+- `src/services/flashscoreService.ts`: Önce API feed'lerini dener, boş dönerse mobil sayfadan (m.flashscore.com.tr) metin parse fallback'i yapar.
 - `src/utils/flashscoreParser.ts`: Ham feed metnini `Match` modeline parse eder.
 - `src/utils/flashscoreUrls.ts`: maç/h2h/istatistik URL üreticileri.
 - `src/components/MatchCard.tsx`: Tek maç kartının UI bileşeni ve hızlı link butonları.
